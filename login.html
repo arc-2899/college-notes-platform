@@ -3,66 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - College Notes Platform</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; }
-        .login-container { background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); width: 100%; max-width: 400px; padding: 40px; }
-        .login-header { text-align: center; margin-bottom: 30px; }
-        .login-header h1 { color: #333; margin-bottom: 10px; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; color: #333; font-weight: 500; }
-        input { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 5px; }
-        input:focus { outline: none; border-color: #667eea; }
-        .role-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 10px 0; }
-        .role-btn { padding: 10px; border: 2px solid #e0e0e0; border-radius: 5px; cursor: pointer; text-align: center; }
-        .role-btn.active { background: #667eea; color: white; border-color: #667eea; }
-        .login-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 5px; font-weight: 600; cursor: pointer; }
-    </style>
+    <title>Login - College Notes</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="login-page">
     <div class="login-container">
-        <div class="login-header">
-            <h1>📚 CollegeNotes</h1>
-            <p>Access, share, and manage study materials</p>
+        <div class="login-box">
+            <h3>LOGIN HERE</h3>
+            <p>ENTER YOUR REGISTER NUMBER</p>
+            
+            <input type="text" id="regNumber" placeholder="Enter Register Number" class="input-field">
+            
+            <div id="passwordField" style="display:none;">
+                <input type="password" id="password" placeholder="Enter Password" class="input-field">
+            </div>
+            
+            <label class="checkbox-label">
+                <input type="checkbox" id="rememberMe">
+                <span>Remember me</span>
+            </label>
+            
+            <button id="loginBtn" class="login-button">LOGIN</button>
+            <p id="error" style="color:red; display:none;"></p>
         </div>
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" required placeholder="your.email@svec.edu">
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" required placeholder="Enter password">
-            </div>
-            <div class="form-group">
-                <label>Select Your Role:</label>
-                <div class="role-options">
-                    <button type="button" class="role-btn active" data-role="student">👨‍🎓 Student</button>
-                    <button type="button" class="role-btn" data-role="admin">👨‍💼 Admin</button>
-                    <button type="button" class="role-btn" data-role="god">👑 God Admin</button>
-                </div>
-            </div>
-            <button type="submit" class="login-btn">Login</button>
-        </form>
     </div>
+
     <script>
-        let selectedRole = 'student';
-        document.querySelectorAll('.role-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                selectedRole = btn.dataset.role;
-            });
+        const regInput = document.getElementById('regNumber');
+        const passwordField = document.getElementById('passwordField');
+        const passwordInput = document.getElementById('password');
+        const rememberCheckbox = document.getElementById('rememberMe');
+        const loginBtn = document.getElementById('loginBtn');
+        const errorMsg = document.getElementById('error');
+
+        regInput.addEventListener('input', function() {
+            const val = this.value.toLowerCase();
+            if (val === 'admin' || val === 'code over write') {
+                passwordField.style.display = 'block';
+            } else {
+                passwordField.style.display = 'none';
+            }
         });
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            localStorage.setItem('userEmail', email);
-            localStorage.setItem('userRole', selectedRole);
-            localStorage.setItem('isLoggedIn', 'true');
-            window.location.href = 'dashboard.html';
+
+        loginBtn.addEventListener('click', function() {
+            const reg = regInput.value;
+            const pass = passwordInput.value;
+            errorMsg.style.display = 'none';
+
+            // Check student ranges
+            const csStart = 25021004601;
+            const csEnd = 25021004661;
+            const bsStart = 25021006501;
+            const bsEnd = 25021006560;
+            const regNum = parseInt(reg.replace(/[A-Z]/g, ''));
+
+            if (reg === 'admin' && pass === '0000') {
+                localStorage.setItem('user', 'admin');
+                localStorage.setItem('role', 'admin');
+                localStorage.setItem('rememberMe', rememberCheckbox.checked);
+                window.location.href = 'dashboard.html';
+            } else if (reg.toLowerCase() === 'code over write' && pass === '10000') {
+                localStorage.setItem('user', 'god');
+                localStorage.setItem('role', 'god');
+                localStorage.setItem('rememberMe', rememberCheckbox.checked);
+                window.location.href = 'dashboard.html';
+            } else if ((regNum >= 25021004601 && regNum <= 25021004661) || (regNum >= 25021006501 && regNum <= 25021006560)) {
+                localStorage.setItem('user', reg);
+                localStorage.setItem('role', 'student');
+                localStorage.setItem('rememberMe', rememberCheckbox.checked);
+                window.location.href = 'dashboard.html';
+            } else {
+                errorMsg.textContent = 'Invalid credentials';
+                errorMsg.style.display = 'block';
+            }
         });
     </script>
 </body>
