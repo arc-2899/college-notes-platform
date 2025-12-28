@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - College Notes Sharing Platform</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 50px 40px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            width: 100%;
+            max-width: 420px;
+        }
+        h2 { color: #333; font-size: 28px; margin-bottom: 10px; text-align: center; }
+        p { color: #666; font-size: 14px; text-align: center; margin-bottom: 30px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; color: #555; font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        input[type="text"]:focus, input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .checkbox-group { display: flex; align-items: center; margin: 20px 0; }
+        input[type="checkbox"] { width: 18px; height: 18px; margin-right: 8px; cursor: pointer; }
+        .checkbox-label { color: #666; font-size: 14px; cursor: pointer; user-select: none; }
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4); }
+        .btn-login:active { transform: translateY(0); }
+        .error-msg { color: #d32f2f; font-size: 13px; margin-top: 15px; text-align: center; display: none; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>LOGIN HERE</h2>
+        <p>ENTER YOUR REGISTER NUMBER</p>
+        
+        <div class="form-group">
+            <label for="regNumber">Register Number</label>
+            <input type="text" id="regNumber" placeholder="e.g. 25A21A4601">
+        </div>
+        
+        <div id="passwordDiv" class="form-group hidden">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter password">
+        </div>
+        
+        <div class="checkbox-group">
+            <input type="checkbox" id="rememberMe">
+            <label for="rememberMe" class="checkbox-label">Remember me</label>
+        </div>
+        
+        <button class="btn-login" onclick="handleLogin()">LOGIN</button>
+        <div class="error-msg" id="errorMsg"></div>
+    </div>
+
+    <script>
+        const regInput = document.getElementById('regNumber');
+        const passInput = document.getElementById('password');
+        const passwordDiv = document.getElementById('passwordDiv');
+        const rememberCheckbox = document.getElementById('rememberMe');
+        const errorMsg = document.getElementById('errorMsg');
+
+        // Show/hide password field based on input
+        regInput.addEventListener('input', function() {
+            const val = this.value.toLowerCase();
+            if (val === 'admin' || val === 'code over write') {
+                passwordDiv.classList.remove('hidden');
+            } else {
+                passwordDiv.classList.add('hidden');
+            }
+        });
+
+        function handleLogin() {
+            const reg = regInput.value.toUpperCase().trim();
+            const pass = passInput.value;
+            errorMsg.style.display = 'none';
+            errorMsg.textContent = '';
+
+            // Admin check
+            if (reg === 'ADMIN' && pass === '0000') {
+                localStorage.setItem('user', 'admin');
+                localStorage.setItem('role', 'admin');
+                localStorage.setItem('rememberMe', rememberCheckbox.checked);
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
+            // God mode check
+            if (reg === 'CODE OVER WRITE' && pass === '10000') {
+                localStorage.setItem('user', 'god');
+                localStorage.setItem('role', 'god');
+                localStorage.setItem('rememberMe', rememberCheckbox.checked);
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
+            // Student validation (CS: 25A21A4601-4661, BS: 25A21A6501-6560)
+            const csPattern = /^25A21A46(0[0-9]|[1-5][0-9]|6[0-1])$/;
+            const bsPattern = /^25A21A65[0-5][0-9]$/;
+
+            if (csPattern.test(reg) || bsPattern.test(reg)) {
+                localStorage.setItem('user', reg);
+                localStorage.setItem('role', 'student');
+                localStorage.setItem('rememberMe', rememberCheckbox.checked);
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
+            // Invalid
+            errorMsg.textContent = 'Invalid Register Number or Password';
+            errorMsg.style.display = 'block';
+        }
+
+        // Allow Enter key to login
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') handleLogin();
+        });
+    </script>
+</body>
+</html>
