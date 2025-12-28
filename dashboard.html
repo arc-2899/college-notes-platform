@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - College Notes Platform</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f5f5f5; }
+        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 24px; font-weight: bold; }
+        .user-info { text-align: right; }
+        .user-role { font-size: 14px; opacity: 0.9; }
+        .navbar { background: white; padding: 15px 20px; display: flex; gap: 15px; border-bottom: 1px solid #e0e0e0; }
+        .subject-btn { padding: 10px 20px; border: 2px solid #667eea; color: #667eea; background: white; border-radius: 25px; cursor: pointer; transition: all 0.3s; }
+        .subject-btn:hover { background: #667eea; color: white; }
+        .subject-btn.active { background: #667eea; color: white; }
+        .toolbar { background: white; padding: 15px 20px; border-bottom: 1px solid #e0e0e0; display: flex; justify-content: space-between; align-items: center; }
+        .dropdown { position: relative; display: inline-block; }
+        .dropdown-btn { padding: 10px 15px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .dropdown-content { display: none; position: absolute; background: white; min-width: 200px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); z-index: 1; border-radius: 5px; top: 100%; left: 0; }
+        .dropdown-content a { color: #333; padding: 12px 16px; text-decoration: none; display: block; }
+        .dropdown-content a:hover { background: #f1f1f1; }
+        .dropdown:hover .dropdown-content { display: block; }
+        .content { padding: 30px 20px; }
+        .subject-area { background: white; border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .subject-title { font-size: 20px; font-weight: bold; color: #333; margin-bottom: 15px; }
+        .folder-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
+        .folder { background: #f9f9f9; padding: 15px; border-radius: 8px; border: 2px dashed #ddd; text-align: center; cursor: pointer; transition: all 0.3s; }
+        .folder:hover { background: #f0f0f0; border-color: #667eea; }
+        .folder-icon { font-size: 30px; margin-bottom: 10px; }
+        .folder-name { color: #333; font-weight: 500; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">📚 CollegeNotes</div>
+        <div class="user-info">
+            <div id="userEmail"></div>
+            <div class="user-role" id="userRole"></div>
+        </div>
+    </header>
+    <div class="navbar">
+        <button class="subject-btn active" data-subject="all">📚 All Notes</button>
+        <button class="subject-btn" data-subject="math">📐 Mathematics</button>
+        <button class="subject-btn" data-subject="physics">⚛️ Physics</button>
+        <button class="subject-btn" data-subject="chemistry">🧪 Chemistry</button>
+        <button class="subject-btn" data-subject="programming">💻 Programming</button>
+        <button class="subject-btn" data-subject="other">📝 Other</button>
+    </div>
+    <div class="toolbar">
+        <div style="display: flex; gap: 10px;">
+            <div class="dropdown">
+                <button class="dropdown-btn">⬇️ Edit Tools</button>
+                <div class="dropdown-content">
+                    <a href="#">✂️ Cut</a>
+                    <a href="#">📋 Copy</a>
+                    <a href="#">📌 Paste</a>
+                    <a href="#">🗑️ Delete</a>
+                    <a href="#">🔄 Rename</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="dropdown-btn" id="adminBtn">👨‍💼 Admin</button>
+                <div class="dropdown-content">
+                    <a href="ADMIN.html">Admin Panel</a>
+                    <a href="#">Manage Users</a>
+                    <a href="#">Settings</a>
+                </div>
+            </div>
+        </div>
+        <button onclick="handleLogout()" style="padding: 10px 20px; background: #ff6b6b; color: white; border: none; border-radius: 5px; cursor: pointer;">🚪 Logout</button>
+    </div>
+    <div class="content">
+        <div class="subject-area" id="mathArea">
+            <div class="subject-title">📐 Mathematics</div>
+            <div class="folder-grid">
+                <div class="folder"><div class="folder-icon">📁</div><div class="folder-name">Linear Algebra</div></div>
+                <div class="folder"><div class="folder-icon">📁</div><div class="folder-name">Calculus</div></div>
+                <div class="folder"><div class="folder-icon">📁</div><div class="folder-name">Geometry</div></div>
+                <div class="folder"><div class="folder-icon">📁</div><div class="folder-name">Statistics</div></div>
+            </div>
+        </div>
+        <div class="subject-area" id="physicsArea">
+            <div class="subject-title">⚛️ Physics</div>
+            <div class="folder-grid">
+                <div class="folder"><div class="folder-icon">📁</div><div class="folder-name">Mechanics</div></div>
+                <div class="folder"><div class="folder-icon">📁</div><div class="folder-name">Thermodynamics</div></div>
+                <div class="folder"><div class="folder-icon">📁</div><div class="folder-name">Electromagnetism</div></div>
+            </div>
+        </div>
+        <div class="subject-area" id="chemistryArea">
+            <div class="subject-title">🧪 Chemistry</div>
+            <div class="folder-grid">
+                <div class="folder"><div class="folder-icon">📁</div><div class="folder-name">Organic</div></div>
+                <div class="folder"><div class="folder-icon">📁</div><div class="folder-name">Inorganic</div></div>
+                <div class="folder"><div class="folder-icon">📁</div><div class="folder-name">Physical Chemistry</div></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const userEmail = localStorage.getItem('userEmail');
+        const userRole = localStorage.getItem('userRole');
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        if (!isLoggedIn) window.location.href = 'login.html';
+        document.getElementById('userEmail').textContent = userEmail || 'Guest';
+        document.getElementById('userRole').textContent = '(' + (userRole || 'student') + ')';
+        const adminBtn = document.getElementById('adminBtn');
+        if (userRole === 'admin' || userRole === 'god') {
+            adminBtn.style.display = 'inline-block';
+            if (userRole === 'god') adminBtn.innerHTML = '👑 God Admin';
+        } else {
+            adminBtn.style.display = 'none';
+        }
+        document.querySelectorAll('.subject-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.subject-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        function handleLogout() {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
