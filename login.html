@@ -5,6 +5,116 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - College Notes</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        body.login-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+        }
+        
+        .login-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        .login-box h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-size: 24px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .login-box p {
+            margin: 0 0 25px 0;
+            color: #666;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            color: #666;
+            font-size: 14px;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .checkbox-label input[type="checkbox"] {
+            margin-right: 8px;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        
+        .login-button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .login-button:active {
+            transform: translateY(0);
+        }
+        
+        #error {
+            color: #d32f2f;
+            font-size: 13px;
+            margin-top: 15px;
+            text-align: center;
+            display: none;
+        }
+        
+        #passwordField {
+            display: none;
+        }
+    </style>
 </head>
 <body class="login-page">
     <div class="login-container">
@@ -14,7 +124,7 @@
             
             <input type="text" id="regNumber" placeholder="Enter Register Number" class="input-field">
             
-            <div id="passwordField" style="display:none;">
+            <div id="passwordField">
                 <input type="password" id="password" placeholder="Enter Password" class="input-field">
             </div>
             
@@ -24,10 +134,10 @@
             </label>
             
             <button id="loginBtn" class="login-button">LOGIN</button>
-            <p id="error" style="color:red; display:none;"></p>
+            <p id="error"></p>
         </div>
     </div>
-
+    
     <script>
         const regInput = document.getElementById('regNumber');
         const passwordField = document.getElementById('passwordField');
@@ -35,7 +145,8 @@
         const rememberCheckbox = document.getElementById('rememberMe');
         const loginBtn = document.getElementById('loginBtn');
         const errorMsg = document.getElementById('error');
-
+        
+        // Show password field for admin or god access
         regInput.addEventListener('input', function() {
             const val = this.value.toLowerCase();
             if (val === 'admin' || val === 'code over write') {
@@ -44,37 +155,54 @@
                 passwordField.style.display = 'none';
             }
         });
-
+        
         loginBtn.addEventListener('click', function() {
-            const reg = regInput.value;
+            const reg = regInput.value.toUpperCase();
             const pass = passwordInput.value;
             errorMsg.style.display = 'none';
-
-            // Check student ranges
-            const csStart = 25021004601;
-            const csEnd = 25021004661;
-            const bsStart = 25021006501;
-            const bsEnd = 25021006560;
-            const regNum = parseInt(reg.replace(/[A-Z]/g, ''));
-
-            if (reg === 'admin' && pass === '0000') {
+            
+            // Check for admin access
+            if (reg === 'ADMIN' && pass === '0000') {
                 localStorage.setItem('user', 'admin');
                 localStorage.setItem('role', 'admin');
                 localStorage.setItem('rememberMe', rememberCheckbox.checked);
                 window.location.href = 'dashboard.html';
-            } else if (reg.toLowerCase() === 'code over write' && pass === '10000') {
+                return;
+            }
+            
+            // Check for god access
+            if (reg === 'CODE OVER WRITE' && pass === '10000') {
                 localStorage.setItem('user', 'god');
                 localStorage.setItem('role', 'god');
                 localStorage.setItem('rememberMe', rememberCheckbox.checked);
                 window.location.href = 'dashboard.html';
-            } else if ((regNum >= 25021004601 && regNum <= 25021004661) || (regNum >= 25021006501 && regNum <= 25021006560)) {
+                return;
+            }
+            
+            // Check student register numbers
+            // CS/Normal: 25A21A4601 - 25A21A4661
+            // BS: 25A21A6501 - 25A21A6560
+            // Fixed regex patterns to match the actual format
+            const csPattern = /^25A21A46(0[0-9]|[1-5][0-9]|6[0-1])$/;
+            const bsPattern = /^25A21A65[0-5][0-9]$/;
+            
+            if (csPattern.test(reg) || bsPattern.test(reg)) {
                 localStorage.setItem('user', reg);
                 localStorage.setItem('role', 'student');
                 localStorage.setItem('rememberMe', rememberCheckbox.checked);
                 window.location.href = 'dashboard.html';
-            } else {
-                errorMsg.textContent = 'Invalid credentials';
-                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            // Invalid credentials
+            errorMsg.textContent = 'Invalid Register Number';
+            errorMsg.style.display = 'block';
+        });
+        
+        // Allow Enter key to login
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                loginBtn.click();
             }
         });
     </script>
