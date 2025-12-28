@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes - College Notes Platform</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="dashboard-page">
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">📚 CollageNotes</div>
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="notes.html" class="active">Notes</a></li>
+                <li><a href="notifications.html">Notifications</a></li>
+                <li><a href="convert.html">Convert</a></li>
+                <li id="adminLink" style="display: none;"><a href="admin.html">Admin</a></li>
+                <li id="godLink" style="display: none;"><a href="god-admin.html">God Admin</a></li>
+                <li class="nav-right"><a href="#" id="logoutBtn">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container notes-container">
+        <div class="notes-layout">
+            <aside class="subjects-sidebar">
+                <h2>📚 Subjects</h2>
+                <div id="subjectsTabs" class="subjects-tabs">
+                    <p class="loading">Loading subjects...</p>
+                </div>
+            </aside>
+
+            <main class="notes-main">
+                <div id="foldersView">
+                    <div class="content-header">
+                        <h2 id="currentSubject">📖 Select a Subject</h2>
+                        <p id="subjectDescription"></p>
+                    </div>
+                    <div id="breadcrumb" class="breadcrumb"></div>
+                    <div id="foldersList" class="folders-grid">
+                        <p class="empty">Select a subject to view folders</p>
+                    </div>
+                    <div id="filesList" class="files-list"></div>
+                    <div id="pagination" class="pagination" style="display: none;">
+                        <button id="prevBtn" class="btn-small">← Previous</button>
+                        <span id="pageInfo">Page 1</span>
+                        <button id="nextBtn" class="btn-small">Next →</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div id="previewModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" id="closePreview">&times;</span>
+            <div id="previewArea"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 College Notes Platform</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="js/firebase.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

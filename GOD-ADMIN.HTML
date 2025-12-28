@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>God Admin - College Notes Platform</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="dashboard-page">
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">📚 CollageNotes</div>
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="notes.html">Notes</a></li>
+                <li><a href="notifications.html">Notifications</a></li>
+                <li><a href="convert.html">Convert</a></li>
+                <li><a href="admin.html">Admin</a></li>
+                <li><a href="god-admin.html" class="active">God Admin</a></li>
+                <li class="nav-right"><a href="#" id="logoutBtn">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container admin-container">
+        <div class="admin-tabs">
+            <button class="tab-btn active" data-tab="logs">📊 Activity Logs</button>
+            <button class="tab-btn" data-tab="admins">👥 Manage Admins</button>
+        </div>
+
+        <div id="logs" class="tab-content active">
+            <div class="card">
+                <h2>Activity Logs</h2>
+                <div id="logsList"></div>
+            </div>
+        </div>
+
+        <div id="admins" class="tab-content">
+            <div class="card">
+                <h2>Manage Admins</h2>
+                <div class="form-group">
+                    <label for="promoteRegNumber">Student Register Number</label>
+                    <input type="text" id="promoteRegNumber" placeholder="25A21A4601">
+                </div>
+                <button id="promoteBtn" class="btn-primary">Make Admin</button>
+                <div id="adminsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 College Notes Platform</p>
+    </footer>
+
+    <script src="js/firebase.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
